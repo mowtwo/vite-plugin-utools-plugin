@@ -17,3 +17,4 @@ node_modules/
 .yarn-offline-mirror-metadata.json
 .yarn-offline-mirror
 vite-plugin-utools-plugin-1.0.0.tgz
+test/

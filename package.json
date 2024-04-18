@@ -4,7 +4,7 @@
   "type": "module",
   "keywords": [],
   "author": "mowtwo",
-  "license": "ISC",
+  "license": "MIT",
   "description": "",
   "exports": {
     ".": {
