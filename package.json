@@ -2,10 +2,16 @@
   "name": "vite-plugin-utools-plugin",
   "version": "1.0.0",
   "type": "module",
-  "keywords": [],
+  "keywords": [
+    "vite",
+    "utools",
+    "plugin"
+  ],
   "author": "mowtwo",
   "license": "MIT",
-  "description": "",
+  "description": "一个utools的vite插件",
+  "repository": "https://github.com/mowtwo/vite-plugin-utools-plugin",
+  "homepage": "https://github.com/mowtwo/vite-plugin-utools-plugin",
   "exports": {
     ".": {
       "import": {
