@@ -1,0 +1,22 @@
+{
+  "name": "vite-plugin-utools-plugin",
+  "version": "1.0.0",
+  "type": "module",
+  "keywords": [],
+  "author": "mowtwo",
+  "license": "ISC",
+  "description": "",
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./src/vite-plugin-utools-plugin",
+        "types": "./typing.d.ts"
+      }
+    }
+  },
+  "types": "./typing.d.ts",
+  "dependencies": {
+    "ora": "^8.0.1",
+    "vite": "^5.2.9"
+  }
+}
