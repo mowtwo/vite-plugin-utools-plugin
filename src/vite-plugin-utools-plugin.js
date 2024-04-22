@@ -70,7 +70,7 @@ export default function vitePluginUtoolsPlugin(isDev, options = {}) {
           "logo": "logo.png",
           "main": "index.html",
           "development": {
-            "url": devServerUrl
+            "main": devServerUrl
           },
           "features": [
             {
