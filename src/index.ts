@@ -193,7 +193,7 @@ export default function vitePluginUtoolsPlugin(
         devDir += '/.utools'
       }
       mkDevDirPath = resolveProjectPath(devDir)
-      if (cleanDevDir) {
+      if (cleanDevDir && isDev) {
         await fs.rm(mkDevDirPath, {
           force: true,
           recursive: true
