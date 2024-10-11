@@ -256,7 +256,7 @@ export default function vitePluginUtoolsPlugin(
             $schema,
             main,
             development
-          })
+          }, undefined, 2)
         )
       }
 
