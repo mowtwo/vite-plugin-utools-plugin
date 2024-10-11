@@ -22,6 +22,11 @@ export interface Options {
      * @default true
      */
     relativeBasePath?: boolean
+    /**
+     * 是否在打包后，需要同步npm dependencies
+     * @default false
+     */
+    syncNpmDeps?: boolean
   }
   /**
    * server配置

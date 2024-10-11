@@ -9,7 +9,7 @@ import { buildPluginJson, distPluginJson, writePluginJson } from './pluginjson'
 import { globby } from 'globby'
 import { buildCode } from './tsup'
 import chokidar, { FSWatcher } from 'chokidar'
-
+import cp from 'node:child_process'
 
 const logger = ora({
   prefixText: `[utools]`,
@@ -68,6 +68,33 @@ export default function vitePluginUtoolsPlugin(
     }
 
     return ignoreEntryMatcher(optionsIgnoreEntry)
+  }
+
+  const safeCjsPackageJsonBuild = async (outDir: string) => {
+    const projectPackageJsonPath = resolveProjectPath('package.json')
+
+    if (await filePathExisted(projectPackageJsonPath)) {
+      const projectPackageJson = JSON.parse(await fs.readFile(
+        projectPackageJsonPath,
+        { encoding: 'utf-8' }
+      ))
+
+      if (projectPackageJson.type === 'module') {
+        logger.warn('根项目路径为esm模式，创建package.json保证兼容')
+        await fs.writeFile(
+          path.join(
+            outDir,
+            'package.json'
+          ),
+          JSON.stringify({
+            type: "commonjs"
+          }, undefined, 2),
+          { encoding: 'utf-8' }
+        )
+
+        return projectPackageJson
+      }
+    }
   }
 
   let isDev = true
@@ -241,28 +268,7 @@ export default function vitePluginUtoolsPlugin(
           )
         )
 
-        const projectPackageJsonPath = resolveProjectPath('package.json')
-
-        if (await filePathExisted(projectPackageJsonPath)) {
-          const projectPackageJson = JSON.parse(await fs.readFile(
-            projectPackageJsonPath,
-            { encoding: 'utf-8' }
-          ))
-
-          if (projectPackageJson.type === 'module') {
-            logger.warn('根项目路径为esm模式，创建package.json保证兼容')
-            await fs.writeFile(
-              path.join(
-                mkDevDirPath,
-                'package.json'
-              ),
-              JSON.stringify({
-                type: "commonjs"
-              }, undefined, 2),
-              { encoding: 'utf-8' }
-            )
-          }
-        }
+        await safeCjsPackageJsonBuild(mkDevDirPath)
 
         const codeFiles = await scanAllCodeFiles()
 
@@ -368,10 +374,26 @@ export default function vitePluginUtoolsPlugin(
 
         const codeFiles = await scanAllCodeFiles()
 
-
         if (codeFiles.length > 0) {
           await buildCodeClient(isDev, projectDistPath, ...codeFiles)
         }
+
+        const cjsPackageJson = await safeCjsPackageJsonBuild(projectDistPath)
+
+        if (options?.build?.syncNpmDeps && cjsPackageJson) {
+          const dependencies = cjsPackageJson.dependencies
+          if (Array.isArray(dependencies) && dependencies.length > 0) {
+            logger.warn(`需要对npm依赖进行同步，需要同步插件${dependencies.length}个`)
+            const npmExe = process.platform === 'win32'
+              ? 'npm.cmd'
+              : 'npm'
+            cp.spawnSync(npmExe, ['install'], {
+              cwd: projectDistPath,
+              stdio: 'inherit'
+            })
+          }
+        }
+
       }
     },
   }
