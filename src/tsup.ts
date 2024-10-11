@@ -55,6 +55,9 @@ export async function buildCode(dev: boolean, outDir: string, noExternal: (strin
           js: '.js'
         }
       },
+      external: [
+        "electron"
+      ]
     })
   }
 }
