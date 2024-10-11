@@ -2,6 +2,10 @@
   "name": "vite-plugin-utools-plugin",
   "version": "1.0.2",
   "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "example": "cd example && vite"
+  },
   "keywords": [
     "vite",
     "utools",
@@ -14,15 +18,22 @@
   "homepage": "https://github.com/mowtwo/vite-plugin-utools-plugin",
   "exports": {
     ".": {
-      "import": {
-        "default": "./src/vite-plugin-utools-plugin",
-        "types": "./typing.d.ts"
-      }
-    }
+      "import": "./dist/index.js"
+    },
+    "./pluginjson-schema": "./node_modules/utools-api-types/resource/utools.schema.json"
   },
-  "types": "./typing.d.ts",
-  "dependencies": {
+  "peerDependencies": {
+    "globby": "^14.0.2",
     "ora": "^8.0.1",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.3",
+    "utools-api-types": "^5.2.0",
     "vite": "^5.2.9"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5"
+  },
+  "dependencies": {
+    "chokidar": "^4.0.1"
   }
 }

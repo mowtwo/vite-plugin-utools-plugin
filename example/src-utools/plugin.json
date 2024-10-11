@@ -1,0 +1,11 @@
+{
+  "logo": "logo.png",
+  "main": "index.html",
+  "features": [
+    "我的"
+  ],
+  "development": {
+    "main": "http//localhost:5173/index.html"
+  },
+  "$schema": "../node_modules/utools-api-types/resource/utools.schema.json"
+}
