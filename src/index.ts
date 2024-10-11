@@ -184,7 +184,7 @@ export default function vitePluginUtoolsPlugin(
       const host = config.server.host ?? 'localhost'
 
 
-      const utoolsDevServer = `${isHttps ? 'https' : 'http'}//${host}:${port}`
+      const utoolsDevServer = `${isHttps ? 'https' : 'http'}://${host}:${port}`
 
       mkSourceDirPath = resolveProjectPath(source)
       const cleanDevDir = options?.clean ?? true
