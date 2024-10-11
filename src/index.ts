@@ -123,7 +123,7 @@ export default function vitePluginUtoolsPlugin(
     ],
     {
       cwd: mkSourceDirPath,
-      onlyFiles:true
+      onlyFiles: true
     }
   ).then(files =>
     files.filter(file =>
@@ -224,6 +224,39 @@ export default function vitePluginUtoolsPlugin(
             utoolsDevServer,
             options?.utools?.jsonSchemaPath ?? '../node_modules/utools-api-types/resource/utools.schema.json'
           )
+        )
+      } else {
+        const pluginjson = JSON.parse(
+          await fs.readFile(
+            pluginJsonPath,
+            { encoding: 'utf-8' }
+          )
+        )
+
+        const {
+          logo,
+          $schema,
+          main,
+          development
+        } = JSON.parse(
+          buildPluginJson(
+            isDev as true,
+            logoBasename,
+            options?.utools?.main ?? 'index.html',
+            utoolsDevServer,
+            options?.utools?.jsonSchemaPath ?? '../node_modules/utools-api-types/resource/utools.schema.json'
+          )
+        )
+
+        await writePluginJson(
+          pluginJsonPath,
+          JSON.stringify({
+            ...pluginjson,
+            logo,
+            $schema,
+            main,
+            development
+          })
         )
       }
 
