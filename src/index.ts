@@ -98,8 +98,6 @@ export default function vitePluginUtoolsPlugin(
   }
 
   let isDev = true
-  let publicDir = ''
-  let distDir = ''
   let logoPath = ''
   let mkDevDirPath = ''
   let mkSourceDirPath = ''
@@ -118,14 +116,14 @@ export default function vitePluginUtoolsPlugin(
 
   const scanAllCodeFiles = () => (globby(
     [
-      '*.ts',
-      '*.tsx',
-      '*.js',
-      '*.jsx'
+      '**/*.ts',
+      '**/*.tsx',
+      '**/*.js',
+      '**/*.jsx'
     ],
     {
-      onlyFiles: true,
-      cwd: mkSourceDirPath
+      cwd: mkSourceDirPath,
+      onlyFiles:true
     }
   ).then(files =>
     files.filter(file =>
@@ -185,15 +183,6 @@ export default function vitePluginUtoolsPlugin(
       )
       const host = config.server.host ?? 'localhost'
 
-      publicDir = resolveProjectPath(
-        path.relative(process.cwd(), config.publicDir)
-      )
-      distDir = resolveProjectPath(
-        path.relative(
-          process.cwd(),
-          config.build.outDir
-        )
-      )
 
       const utoolsDevServer = `${isHttps ? 'https' : 'http'}//${host}:${port}`
 
@@ -269,15 +258,6 @@ export default function vitePluginUtoolsPlugin(
         )
 
         await safeCjsPackageJsonBuild(mkDevDirPath)
-
-        const codeFiles = await scanAllCodeFiles()
-
-        console.log(codeFiles)
-
-
-        if (codeFiles.length > 0) {
-          await buildCodeClient(isDev, mkDevDirPath, ...codeFiles)
-        }
 
         const watchFileUpdate = (file: string) => {
           if (['.js', '.ts', '.tsx', '.jsx'].some(ext => file.endsWith(ext))) {
