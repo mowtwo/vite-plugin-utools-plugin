@@ -46,17 +46,19 @@ export async function buildCode(dev: boolean, outDir: string, noExternal: (strin
       clean: false,
       format: 'cjs',
       noExternal,
-      bundle: true,
+      bundle: false,
       minify: false,
       target: `node${nodeVersion ?? 14}`,
       platform: 'node',
+      splitting:false,
       outExtension() {
         return {
           js: '.js'
         }
       },
       external: [
-        "electron"
+        "electron",
+        "./src-utools/**/*.ts"
       ]
     })
   }

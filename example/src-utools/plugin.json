@@ -1,1 +1,7 @@
-{"logo":"logo.png","main":"index.html","features":["我的"],"$schema":"../node_modules/utools-api-types/resource/utools.schema.json","development":{"main":"http//localhost:5173/index.html"}}
+{
+  "logo": "logo.png",
+  "main": "index.html",
+  "features": [
+    "我的"
+  ]
+}
