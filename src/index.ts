@@ -10,6 +10,7 @@ import { globby } from 'globby'
 import { buildCode } from './tsup'
 import chokidar, { FSWatcher } from 'chokidar'
 import cp from 'node:child_process'
+import { dirPathExisted, filePathExisted } from './fs'
 
 const logger = ora({
   prefixText: `[utools]`,
@@ -33,19 +34,6 @@ export default function vitePluginUtoolsPlugin(
   const safeDirPath = (target: string) =>
     target.endsWith('/') ? target.slice(0, target.length - 1) : target
 
-  const dirPathExisted = (target: string) =>
-    fs.stat(target)
-      .then(s =>
-        s.isDirectory()
-      )
-      .catch(() => false)
-
-  const filePathExisted = (target: string) =>
-    fs.stat(target)
-      .then(s =>
-        s.isFile()
-      )
-      .catch(() => false)
 
   const ignoreEntry = (entry: string, isDev: boolean): boolean => {
     const optionsIgnoreEntry = options?.tsup?.ignoreEntry
@@ -105,13 +93,13 @@ export default function vitePluginUtoolsPlugin(
   let sourceDirLogoPath = ''
 
 
-  const buildCodeClient = (isDev: boolean, outDir: string, ...codeFiles: string[]) =>
+  const buildCodeClient = (isDev: boolean, outDir: string) =>
     buildCode(
       isDev,
       outDir,
       options?.tsup?.noExternal ?? [],
       options?.tsup?.nodeVersion ?? 14,
-      ...codeFiles
+      source
     )
 
   const scanAllCodeFiles = () => (globby(
@@ -294,9 +282,7 @@ export default function vitePluginUtoolsPlugin(
 
         const watchFileUpdate = (file: string) => {
           if (['.js', '.ts', '.tsx', '.jsx'].some(ext => file.endsWith(ext))) {
-            buildCodeClient(isDev, mkDevDirPath, path.relative(
-              process.cwd(), file
-            ).replaceAll('\\', '/'))
+            buildCodeClient(isDev, mkDevDirPath)
           }
           if (file === logoPath || file === pluginJsonPath) {
             fs.copyFile(
@@ -388,7 +374,7 @@ export default function vitePluginUtoolsPlugin(
         const codeFiles = await scanAllCodeFiles()
 
         if (codeFiles.length > 0) {
-          await buildCodeClient(isDev, projectDistPath, ...codeFiles)
+          await buildCodeClient(isDev, projectDistPath)
         }
 
         const cjsPackageJson = await safeCjsPackageJsonBuild(projectDistPath)

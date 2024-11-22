@@ -5,7 +5,12 @@ export default defineConfig({
   plugins: [
     utools(
       'public/logo.png',
-      'src-utools'
+      './src-utools',
+      {
+        tsup: {
+          noExternal: ["openai",'node-fetch']
+        }
+      }
     )
   ]
 })
